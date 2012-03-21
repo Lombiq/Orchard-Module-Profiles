@@ -1,10 +1,12 @@
-Name: OrchardHUN.ModuleProfiles
+Name: Module Profiles
 AntiForgery: enabled
-Author: The Orchard Team
+Author: The Orchard Hungary Team
 Website: http://orchardproject.net
 Version: 1.0
-OrchardVersion: 1.0
-Description: Description for the module
+OrchardVersion: 1.4
+Description: A module that extends the module switching functionality using profiles.
 Features:
     OrchardHUN.ModuleProfiles:
-        Description: Description for feature OrchardHUN.ModuleProfiles.
+		Name: Module Profiles
+        Description: A module for creating module profiles
+		Category: Orchard.HUN
