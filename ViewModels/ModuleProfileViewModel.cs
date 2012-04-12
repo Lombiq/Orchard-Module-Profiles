@@ -5,10 +5,9 @@ using System.Text;
 
 namespace OrchardHUN.ModuleProfiles.ViewModels
 {
-    class ModuleProfileViewModel
+    public class ModuleProfileViewModel
     {
         public string Name { get; set; }
-        public List<string> ModuleNames { get; set; }
-        public List<bool> ModuleStates { get; set; }
+        public Dictionary<string, bool> Definition { get; set; }
     }
 }

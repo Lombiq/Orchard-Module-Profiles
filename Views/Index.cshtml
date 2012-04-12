@@ -1,3 +1,10 @@
-﻿<h1>@Html.TitleForPage(T("Module Profiles").ToString())</h1>
+﻿@model Dictionary<int, string>
+           
+@{
+    var profileNames = new SelectList(Model.Values);
+}
 
-__TEMP__
+<h1>@Html.TitleForPage(T("Module Profiles").ToString())</h1>
+
+@Html.Label("model", T("Here is the list of available profiles:").ToString())
+@Html.DropDownList("Available profiles", profileNames)

@@ -1,6 +1,7 @@
 ﻿using Orchard.Data.Migration;
 using Orchard.Environment.Extensions;
 using OrchardHUN.ModuleProfiles.Models;
+using System.Collections.Generic;
 
 namespace OrchardHUN.ModuleProfiles
 {
@@ -12,7 +13,7 @@ namespace OrchardHUN.ModuleProfiles
             SchemaBuilder.CreateTable(typeof(ModuleProfileRecord).Name,
                 table => table
                     .Column<int>("Id", column => column.PrimaryKey().Identity())
-                    .Column<string>("Name", column => column.NotNull())
+                    .Column<string>("Name", column => column.NotNull().Unique())
                     .Column<string>("Definition", column => column.NotNull())
                 );
             return 1;
