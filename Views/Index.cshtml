@@ -1,9 +1,9 @@
-﻿@model Dictionary<int, string>
+﻿@model OrchardHUN.ModuleProfiles.ViewModels.ProfileListViewModel
            
 @{
     Style.Require("ModuleProfiles");
-    
-    var profileNames = new SelectList(Model.Values);
+
+    var profileNames = new SelectList(Model.ProfileNames);
 }
 
 <h1>@Html.TitleForPage(T("Module Profiles").ToString())</h1>
@@ -12,7 +12,8 @@
 @Html.DropDownList("Available profiles", profileNames, new { @id = "profilelist" })
 
 <input type="button" class="button" value="@T("Activate")" />
-<input type="button" class="button" value="@T("Activate inverse")" />
+<input type="button" class="button" value="@T("Activate Inverse")" />
+<input type="button" class="button" value="@T("View")" />
 <input type="button" class="button" value="@T("Edit")" />
 <input type="button" class="button" value="@T("Delete")" />
 
