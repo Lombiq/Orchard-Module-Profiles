@@ -75,7 +75,21 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             var model = new ModuleProfileViewModel();
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
+            {
                 _repository.Delete(_repository.Fetch(p => p.Name == model.Name).FirstOrDefault());
+                _notifier.Add(NotifyType.Information, T("Successfully deleted profile: {0}.", model.Name));
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(model.Name))
+                {
+                    _notifier.Add(NotifyType.Error, T("No profile selected."));
+                }
+                else
+                {
+                    _notifier.Add(NotifyType.Error, T("Deleting profile failed: {0}.", model.Name));
+                }
+            }
         }
 
         [HttpPost]
@@ -84,9 +98,23 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             var model = new ModuleProfileViewModel();
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
-                _repository.Create(new ModuleProfileRecord() { Name = model.Name });
+            {
+                if (_repository.Get(p => p.Name == model.Name) == null)
+                {
+                    _repository.Create(new ModuleProfileRecord() { Name = model.Name });
+                    _notifier.Add(NotifyType.Information, T("Successfully created profile: {0}.", model.Name));
+                }
+                else
+                {
+                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
+                }
+            }
+            else
+            {
+                _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
+            }
 
-            return RedirectToAction("Index", new { profileName = model.Name } );
+            return RedirectToAction("Index", new { profileName = model.Name });
         }
     }
 }
