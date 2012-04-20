@@ -3,7 +3,17 @@
     width: 200px;
 }
 
- #newModuleNameField
- {
-     width: 200px;
- }
+#newModuleNameField
+{
+    width: 200px;
+}
+
+#moduleTable thead td
+{
+    border-bottom: 1px solid Black;
+}
+
+#moduleTable td
+{
+    min-width: 100px;
+}

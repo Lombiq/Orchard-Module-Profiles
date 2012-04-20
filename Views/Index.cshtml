@@ -5,6 +5,11 @@
 }
 
 <script type="text/javascript">
+    IncludeProfile = function(name) {
+        if ($("#" + name + "_Included").is(':checked')) $("#" + name + "_Enabled").removeAttr("disabled");
+        else $("#" + name + "_Enabled").attr("disabled", true);
+    }
+
     $(document).ready(function () {
         $("#deleteSelectedProfile").click(function () {
             $.ajax({
@@ -45,13 +50,47 @@
     <button type="submit" class="primaryAction">@T("Create New Profile")</button>
 }
 
+<br />
+<br />
+
 @if (Model.Current != null)
+{    
+    using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile", FormMethod.Post)))
+    {
+    <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name)</h1>
+    
+    <button type="submit" class="primaryAction">@T("Save Profile")</button>
+    
+    <br />
+    <br />
+        
+    <table id="moduleTable">
+        <thead>
+            <tr>
+                <td>@T("Included")</td>
+                <td>@T("Enabled")</td>
+                <td>@T("Profile name")</td>
+            </tr>
+        </thead>
+        <tbody>
+        @for (int i = 0; i < Model.Current.Modules.Count; i++)
+        {
+            <tr>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Included", value = Model.Current.Modules[i].Included, onClick = "IncludeProfile(\"" + @Model.Current.Modules[i].Name.Replace('.', '_') + "\")" })</td>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Enabled", disabled = !Model.Current.Modules[i].Included })</td>
+                <td>@Html.TextBoxFor(m => Model.Current.Modules[i].Name, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Name", style = "width: 400px;" })</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+    <br />
+    
+    <button type="submit" class="primaryAction">@T("Save Profile")</button>
+    }
+
+}
+else
 {
-    <h2>@Model.Current.Name</h2>
-    <ul>
-    @foreach (var item in Model.Current.AvailableModules)
-	{
-		 <li>@item.Key</li>
-	}
-    </ul>
+    <h2>@T("No profile selected")</h2>
 }

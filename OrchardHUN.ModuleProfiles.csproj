@@ -93,6 +93,7 @@
     <Compile Include="Models\ModuleProfileRecord.cs" />
     <Compile Include="ResourceManifest.cs" />
     <Compile Include="Routes.cs" />
+    <Compile Include="ViewModels\ModuleViewModel.cs" />
     <Compile Include="ViewModels\ModuleProfileViewModel.cs" />
     <Compile Include="ViewModels\ProfileListViewModel.cs" />
   </ItemGroup>

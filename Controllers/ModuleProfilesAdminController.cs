@@ -53,20 +53,48 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                     model.Current = new ModuleProfileViewModel()
                     {
                         Name = profileName,
-                        ModuleStates = serializer.Deserialize<Dictionary<string, bool>>
+                        Modules = serializer.Deserialize<List<ModuleViewModel>>
                             (profilesData.Find(p => p.Name == profileName).Definition)
-                            ?? new Dictionary<string, bool>()
+                            ?? new List<ModuleViewModel>()
                     };
 
-                    var features = _featureManager.GetAvailableFeatures();
-                    foreach (var item in features)
+                    var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module");
+                    foreach (var item in installedModules)
                     {
-                        model.Current.AvailableModules.Add(item.Id, model.Current.ModuleStates.ContainsKey(item.Name));
+                        if (model.Current.Modules.Find(m => m.Name == item.Id) == null)
+                        {
+                            model.Current.Modules.Add(new ModuleViewModel() { Name = item.Id });
+                        }
                     }
                 }
             }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateProfile()
+        {
+            var model = new ModuleProfileViewModel();
+
+            if (TryUpdateModel<ModuleProfileViewModel>(model))
+            {
+                if (_repository.Get(p => p.Name == model.Name) == null)
+                {
+                    _repository.Create(new ModuleProfileRecord() { Name = model.Name });
+                    _notifier.Add(NotifyType.Information, T("Successfully created profile: {0}.", model.Name));
+                }
+                else
+                {
+                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
+                }
+            }
+            else
+            {
+                _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
+            }
+
+            return RedirectToAction("Index", new { profileName = model.Name });
         }
 
         [HttpDelete]
@@ -93,25 +121,17 @@ namespace OrchardHUN.ModuleProfiles.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateProfile()
+        public ActionResult SaveProfile()
         {
             var model = new ModuleProfileViewModel();
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
-                if (_repository.Get(p => p.Name == model.Name) == null)
-                {
-                    _repository.Create(new ModuleProfileRecord() { Name = model.Name });
-                    _notifier.Add(NotifyType.Information, T("Successfully created profile: {0}.", model.Name));
-                }
-                else
-                {
-                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
-                }
+                _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Name));
             }
             else
             {
-                _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
+                _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Name));
             }
 
             return RedirectToAction("Index", new { profileName = model.Name });

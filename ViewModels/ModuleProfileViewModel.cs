@@ -11,13 +11,11 @@ namespace OrchardHUN.ModuleProfiles.ViewModels
         [Required]
         public string Name { get; set; }
 
-        public Dictionary<string, bool> AvailableModules { get; set; }
-        public Dictionary<string, bool> ModuleStates { get; set; }
+        public List<ModuleViewModel> Modules { get; set; }
 
         public ModuleProfileViewModel()
         {
-            AvailableModules = new Dictionary<string, bool>();
-            ModuleStates = new Dictionary<string, bool>();
+            Modules = new List<ModuleViewModel>();
         }
     }
 }
