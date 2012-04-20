@@ -9,11 +9,13 @@ using Orchard.UI.Notify;
 using OrchardHUN.ModuleProfiles.Models;
 using OrchardHUN.ModuleProfiles.ViewModels;
 using Orchard.Environment.Features;
+using Orchard.UI.Admin;
 
 namespace OrchardHUN.ModuleProfiles.Controllers
 {
+    [Admin]
     [OrchardFeature("OrchardHUN.ModuleProfiles")]
-    public class AdminController : Controller
+    public class ModuleProfilesAdminController : Controller
     {
         private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
@@ -21,7 +23,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
         public Localizer T { get; set; }
 
-        public AdminController(
+        public ModuleProfilesAdminController(
             IRepository<ModuleProfileRecord> repository,
             IFeatureManager featureManager,
             INotifier notifier)
@@ -33,48 +35,58 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             T = NullLocalizer.Instance;
         }
 
-        public ActionResult Index(string currentProfileName = "")
+        public ActionResult Index(string profileName = "")
         {
             var profilesData = _repository.Table.ToList();
-            var list = new ProfileListViewModel();
+            var model = new ProfileListViewModel();
 
-            if (profilesData != null)
+            if (profilesData != null || profilesData.Count > 0)
             {
                 foreach (var item in profilesData)
                 {
-                    list.ProfileNames.Add(item.Id, item.Name);
+                    model.ProfileNames.Add(item.Id, item.Name);
                 }
 
-                if (!string.IsNullOrEmpty(currentProfileName))
+                if (!string.IsNullOrEmpty(profileName) && model.ProfileNames.ContainsValue(profileName))
                 {
                     var serializer = new JavaScriptSerializer();
-
-                    list.Current = new ModuleProfileViewModel()
+                    model.Current = new ModuleProfileViewModel()
                     {
-                        Name = currentProfileName,
-                        ModuleStates = serializer.Deserialize<Dictionary<string, bool>>(profilesData.Find(p => p.Name == currentProfileName).Definition)
+                        Name = profileName,
+                        ModuleStates = serializer.Deserialize<Dictionary<string, bool>>
+                            (profilesData.Find(p => p.Name == profileName).Definition)
+                            ?? new Dictionary<string, bool>()
                     };
 
                     var features = _featureManager.GetAvailableFeatures();
                     foreach (var item in features)
                     {
-                        list.Current.AvailableModules.Add(item.Name, list.Current.ModuleStates[item.Name]);
-                    } 
+                        model.Current.AvailableModules.Add(item.Id, model.Current.ModuleStates.ContainsKey(item.Name));
+                    }
                 }
             }
 
-            return View(list);
+            return View(model);
         }
 
-        [HttpPost]
-        public void CreateNewProfile()
+        [HttpDelete]
+        public void DeleteProfile()
         {
             var model = new ModuleProfileViewModel();
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
-            {
+                _repository.Delete(_repository.Fetch(p => p.Name == model.Name).FirstOrDefault());
+        }
+
+        [HttpPost]
+        public ActionResult CreateProfile()
+        {
+            var model = new ModuleProfileViewModel();
+
+            if (TryUpdateModel<ModuleProfileViewModel>(model))
                 _repository.Create(new ModuleProfileRecord() { Name = model.Name });
-            }
+
+            return RedirectToAction("Index", new { profileName = model.Name } );
         }
     }
 }

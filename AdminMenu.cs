@@ -1,5 +1,6 @@
 ﻿using Orchard.Localization;
 using Orchard.UI.Navigation;
+using Orchard.Security;
 
 namespace OrchardHUN.ModuleProfiles
 {
@@ -10,8 +11,9 @@ namespace OrchardHUN.ModuleProfiles
 
         public void GetNavigation(NavigationBuilder builder)
         {
-            builder.Add(T("Modules"),
-                menu => menu.Add(T("Module Profiles"), "4", item => item.Action("Index", "Admin", new { area = "OrchardHUN.ModuleProfiles" }).LocalNav())
+            builder
+                .Add(T("Modules"), menu => menu
+                    .Add(T("Module Profiles"), "4", item => item.Action("Index", "ModuleProfilesAdmin", new { Area = "OrchardHUN.ModuleProfiles" }).LocalNav())
             );
         }
     }

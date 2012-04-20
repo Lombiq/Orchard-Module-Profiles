@@ -16,7 +16,6 @@ namespace OrchardHUN.ModuleProfiles.ViewModels
 
         public ModuleProfileViewModel()
         {
-            Name = string.Empty;
             AvailableModules = new Dictionary<string, bool>();
             ModuleStates = new Dictionary<string, bool>();
         }

@@ -9,4 +9,4 @@ Features:
     OrchardHUN.ModuleProfiles:
 		Name: Module Profiles
         Description: A module for creating module profiles
-		Category: OrchardHUN
+		Category: Developer

@@ -2,22 +2,56 @@
            
 @{
     Style.Require("ModuleProfiles");
-
-    var profileNames = new SelectList(Model.ProfileNames);
 }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#deleteSelectedProfile").click(function () {
+            $.ajax({
+                type: "DELETE",
+                url: "@Url.Action("DeleteProfile")",
+                data: { Name: $("#profileList option:selected").val(), _antiforgerytoken: $("#__RequestVerificationToken").val() },
+                success: function() {
+                    window.location.reload();
+                }
+            });           
+        });
+
+        $("#viewSelectedProfile").click(function() {
+            window.location.href = "/Modules/ModuleProfiles/" + $("#profileList option:selected").val();
+        });
+    });
+</script>
 
 <h1>@Html.TitleForPage(T("Module Profiles").ToString())</h1>
 
-@Html.Label("model", T("Here is a list of the available module profiles:").ToString())
-@Html.DropDownList("Available profiles", profileNames, new { @id = "profilelist" })
+@using (Html.BeginFormAntiForgeryPost())
+{
+    @Html.Label("model", T("Here is a list of the available module profiles:").ToString())
+    @Html.DropDownListFor(model => model.ProfileNames.Values, new SelectList(Model.ProfileNames.Values), new { id = "profileList" })
 
-<input type="button" class="button" value="@T("Activate")" />
-<input type="button" class="button" value="@T("Activate Inverse")" />
-<input type="button" class="button" value="@T("View")" />
-<input type="button" class="button" value="@T("Edit")" />
-<input type="button" class="button" value="@T("Delete")" />
+    <input type="button" name="viewProfile" id="viewSelectedProfile" class="button" value="@T("View")" />
+    <input type="button" class="button" value="@T("Activate")" />
+    <input type="button" class="button" value="@T("Activate Inverse")" />
+    <input type="button" name="deleteProfile" id="deleteSelectedProfile" class="button" value="@T("Delete")" />
+}
 
-<br /><br />
+<br />
+<br />
 
-<input type="text" id="newmodulenamefield" />
-<input type="button" class="button" value="@T("Create New Profile")" />
+@using (Html.BeginFormAntiForgeryPost(Url.Action("CreateProfile", FormMethod.Post)))
+{
+    @Html.TextBox("Name", "", new { id = "newModuleNameField" })
+    <button type="submit" class="primaryAction">@T("Create New Profile")</button>
+}
+
+@if (Model.Current != null)
+{
+    <h2>@Model.Current.Name</h2>
+    <ul>
+    @foreach (var item in Model.Current.AvailableModules)
+	{
+		 <li>@item.Key</li>
+	}
+    </ul>
+}

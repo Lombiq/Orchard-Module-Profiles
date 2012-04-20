@@ -88,10 +88,11 @@
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Commands\ProfileManagementCommands.cs" />
-    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ModuleProfilesAdminController.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\ModuleProfileRecord.cs" />
     <Compile Include="ResourceManifest.cs" />
+    <Compile Include="Routes.cs" />
     <Compile Include="ViewModels\ModuleProfileViewModel.cs" />
     <Compile Include="ViewModels\ProfileListViewModel.cs" />
   </ItemGroup>
