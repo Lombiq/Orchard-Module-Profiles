@@ -14,7 +14,7 @@ namespace OrchardHUN.ModuleProfiles
                 table => table
                     .Column<int>("Id", column => column.PrimaryKey().Identity())
                     .Column<string>("Name", column => column.NotNull().Unique())
-                    .Column<string>("Definition", column => column.NotNull())
+                    .Column<string>("Definition", column => column.NotNull().Unlimited())
                 );
             return 1;
         }
