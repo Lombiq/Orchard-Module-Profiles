@@ -44,7 +44,7 @@
 <br />
 <br />
 
-@using (Html.BeginFormAntiForgeryPost(Url.Action("CreateProfile", FormMethod.Post)))
+@using (Html.BeginFormAntiForgeryPost(Url.Action("CreateProfile"), FormMethod.Post))
 {
     @Html.TextBox("Name", "", new { id = "newModuleNameField" })
     <button type="submit" class="primaryAction">@T("Create New Profile")</button>
@@ -55,9 +55,10 @@
 
 @if (Model.Current != null)
 {    
-    using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile", FormMethod.Post)))
+    using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile"), FormMethod.Post))
     {
     <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name)</h1>
+    @Html.HiddenFor(m => Model.Current.Name)
     
     <button type="submit" class="primaryAction">@T("Save Profile")</button>
     
@@ -78,7 +79,10 @@
             <tr>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Included", value = Model.Current.Modules[i].Included, onClick = "IncludeProfile(\"" + @Model.Current.Modules[i].Name.Replace('.', '_') + "\")" })</td>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Enabled", disabled = !Model.Current.Modules[i].Included })</td>
-                <td>@Html.TextBoxFor(m => Model.Current.Modules[i].Name, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Name", style = "width: 400px;" })</td>
+                <td>
+                    @Html.DisplayTextFor(m => Model.Current.Modules[i].Name)
+                    @Html.HiddenFor(m => Model.Current.Modules[i].Name)
+                </td>
             </tr>
         }
         </tbody>
