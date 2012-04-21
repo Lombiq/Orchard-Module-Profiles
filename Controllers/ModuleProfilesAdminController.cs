@@ -4,12 +4,12 @@ using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Orchard.Data;
 using Orchard.Environment.Extensions;
+using Orchard.Environment.Features;
 using Orchard.Localization;
+using Orchard.UI.Admin;
 using Orchard.UI.Notify;
 using OrchardHUN.ModuleProfiles.Models;
 using OrchardHUN.ModuleProfiles.ViewModels;
-using Orchard.Environment.Features;
-using Orchard.UI.Admin;
 
 namespace OrchardHUN.ModuleProfiles.Controllers
 {
@@ -97,6 +97,50 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             return RedirectToAction("Index", new { profileName = model.Name });
         }
 
+        [HttpPost]
+        public void ActivateProfile()
+        {
+            var model = new ModuleProfileViewModel();
+
+            if (TryUpdateModel<ModuleProfileViewModel>(model))
+            {
+                var serializer = new JavaScriptSerializer();
+                var modules = serializer.Deserialize<List<ModuleViewModel>>
+                            (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
+
+                _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+
+                _notifier.Add(NotifyType.Information, T("Successfully activated profile: {0}.", model.Name));
+            }
+            else
+            {
+                _notifier.Add(NotifyType.Error, T("Activating profile failed."));
+            }
+        }
+
+        [HttpPost]
+        public void InverseActivateProfile()
+        {
+            var model = new ModuleProfileViewModel();
+
+            if (TryUpdateModel<ModuleProfileViewModel>(model))
+            {
+                var serializer = new JavaScriptSerializer();
+                var modules = serializer.Deserialize<List<ModuleViewModel>>
+                            (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
+
+                _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+
+                _notifier.Add(NotifyType.Information, T("Successfully inverse-activated profile: {0}.", model.Name));
+            }
+            else
+            {
+                _notifier.Add(NotifyType.Error, T("Activating profile failed."));
+            }
+        }
+
         [HttpDelete]
         public void DeleteProfile()
         {
@@ -123,18 +167,25 @@ namespace OrchardHUN.ModuleProfiles.Controllers
         [HttpPost]
         public ActionResult SaveProfile()
         {
-            var model = new ModuleProfileViewModel();
+            var model = new ProfileListViewModel();
 
-            if (TryUpdateModel<ModuleProfileViewModel>(model))
+            if (TryUpdateModel<ProfileListViewModel>(model))
             {
-                _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Name));
+                var serializer = new JavaScriptSerializer();
+                var profile = _repository.Fetch(p => p.Name == model.Current.Name).FirstOrDefault();
+                var included = model.Current.Modules.Where(m => m.Included);
+                profile.Definition = serializer.Serialize(included);
+
+                _repository.Update(profile);
+
+                _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Current.Name));
             }
             else
             {
-                _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Name));
+                _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Current.Name));
             }
 
-            return RedirectToAction("Index", new { profileName = model.Name });
+            return RedirectToAction("Index", new { profileName = model.Current.Name });
         }
     }
 }

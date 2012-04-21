@@ -5,25 +5,52 @@
 }
 
 <script type="text/javascript">
-    IncludeProfile = function(name) {
-        if ($("#" + name + "_Included").is(':checked')) $("#" + name + "_Enabled").removeAttr("disabled");
-        else $("#" + name + "_Enabled").attr("disabled", true);
+    IncludeProfile = function(index) {
+        if ($("#Current_Modules_" + index + "__Included").is(':checked')) $("#Current_Modules_" + index + "__Enabled").removeAttr("disabled");
+        else $("#Current_Modules_" + index + "__Enabled").attr("disabled", true);
     }
 
     $(document).ready(function () {
-        $("#deleteSelectedProfile").click(function () {
+        $("#viewSelectedProfile").click(function() {
+            window.location.href = "/Modules/ModuleProfiles/" + $("#profileList option:selected").val();
+        });
+
+        $("#activateSelectedProfile").click(function () {
             $.ajax({
-                type: "DELETE",
-                url: "@Url.Action("DeleteProfile")",
-                data: { Name: $("#profileList option:selected").val(), _antiforgerytoken: $("#__RequestVerificationToken").val() },
+                type: "POST",
+                url: "@Url.Action("ActivateProfile")",
+                data: {
+                    __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
+                    Name: $("#profileList option:selected").val()
+                },
                 success: function() {
                     window.location.reload();
                 }
             });           
         });
 
-        $("#viewSelectedProfile").click(function() {
-            window.location.href = "/Modules/ModuleProfiles/" + $("#profileList option:selected").val();
+        $("#inverseActivateSelectedProfile").click(function () {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("InverseActivateProfile")",
+                data: {
+                    __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
+                    Name: $("#profileList option:selected").val()
+                },
+                success: function() {
+                    window.location.reload();
+                }
+            });           
+        });
+
+        $("#deleteSelectedProfile").click(function () {
+            $.ajax({
+                type: "DELETE",
+                url: "@Url.Action("DeleteProfile")",
+                success: function() {
+                    window.location.reload();
+                }
+            });           
         });
     });
 </script>
@@ -36,8 +63,8 @@
     @Html.DropDownListFor(model => model.ProfileNames.Values, new SelectList(Model.ProfileNames.Values), new { id = "profileList" })
 
     <input type="button" name="viewProfile" id="viewSelectedProfile" class="button" value="@T("View")" />
-    <input type="button" class="button" value="@T("Activate")" />
-    <input type="button" class="button" value="@T("Activate Inverse")" />
+    <input type="button" name="activateProfile" id="activateSelectedProfile" class="button" value="@T("Activate")" />
+    <input type="button" name="inverseActivateProfile" id="inverseActivateSelectedProfile" class="button" value="@T("Activate Inverse")" />
     <input type="button" name="deleteProfile" id="deleteSelectedProfile" class="button" value="@T("Delete")" />
 }
 
@@ -58,7 +85,7 @@
     using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile"), FormMethod.Post))
     {
     <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name)</h1>
-    @Html.HiddenFor(m => Model.Current.Name)
+        @Html.HiddenFor(m => Model.Current.Name)
     
     <button type="submit" class="primaryAction">@T("Save Profile")</button>
     
@@ -77,8 +104,8 @@
         @for (int i = 0; i < Model.Current.Modules.Count; i++)
         {
             <tr>
-                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Included", value = Model.Current.Modules[i].Included, onClick = "IncludeProfile(\"" + @Model.Current.Modules[i].Name.Replace('.', '_') + "\")" })</td>
-                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { id = Model.Current.Modules[i].Name.Replace('.', '_') + "_Enabled", disabled = !Model.Current.Modules[i].Included })</td>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "IncludeProfile(\"" + @i + "\")" })</td>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { disabled = !Model.Current.Modules[i].Included })</td>
                 <td>
                     @Html.DisplayTextFor(m => Model.Current.Modules[i].Name)
                     @Html.HiddenFor(m => Model.Current.Modules[i].Name)

@@ -1,33 +1,27 @@
-﻿using Orchard.Commands;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Script.Serialization;
+using Orchard.Commands;
+using Orchard.Data;
 using Orchard.Environment.Extensions;
 using Orchard.Environment.Features;
 using Orchard.Localization;
-using Orchard.Modules.Services;
-using System.Collections.Generic;
+using OrchardHUN.ModuleProfiles.Models;
+using OrchardHUN.ModuleProfiles.ViewModels;
 
 namespace OrchardHUN.ModuleProfiles.Commands
 {
     [OrchardFeature("OrchardHUN.ModuleProfiles")]
     public class ProfileManagementCommands : DefaultOrchardCommandHandler
     {
-        private class ModuleSwitcher
-        {
-            public string ModuleName { get; set; }
-            public bool Enable { get; set; }
-
-            public ModuleSwitcher(string moduleName, bool enable)
-            {
-                ModuleName = moduleName;
-                Enable = enable;
-            }
-        }
-
+        private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
 
         public ProfileManagementCommands(
+            IRepository<ModuleProfileRecord> repository,
             IFeatureManager featureManager)
         {
-
+            _repository = repository;
             _featureManager = featureManager;
 
             T = NullLocalizer.Instance;
@@ -37,41 +31,43 @@ namespace OrchardHUN.ModuleProfiles.Commands
         [CommandHelp(@"moduleprofiles activate <ProfileName>")]
         public void ActivateProfile(string profileName)
         {
-            List<ModuleSwitcher> switcher = new List<ModuleSwitcher>();
-            switch (profileName)
+            var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
+
+            if (profile != null)
             {
-                case "Developer":
-                    _featureManager.EnableFeatures(new List<string>()
-                        {
-                            "Vandelay.TranslationManager",
-                            "Orchard.CodeGeneration",
-                        }, true);
-                    _featureManager.DisableFeatures(new List<string>()
-                        {
-                            "Piedone.Combinator"
-                        }, true);
-                    Context.Output.WriteLine(T("Profile \"{0}\" activated.", profileName));
-                    break;
-                case "Production":
-                    _featureManager.EnableFeatures(new List<string>()
-                        {
-                            "Piedone.Combinator"
-                        }, true);
-                    _featureManager.DisableFeatures(new List<string>()
-                        {
-                            "Vandelay.TranslationManager",
-                            "Orchard.DesignerTools",
-                            "Orchard.CodeGeneration",
-                            "Profiling",
-                            "Orchard.Experimental.WebCommandLine",
-                            "Orchard.Packaging",
-                            "Four2n.MiniProfiler"
-                        }, true);
-                    Context.Output.WriteLine(T("Profile \"{0}\" activated.", profileName));
-                    break;
-                default:
-                    Context.Output.WriteLine(T("Profile \"{0}\" not found.", profileName));
-                    break;
+                var serializer = new JavaScriptSerializer();
+                var modules = serializer.Deserialize<List<ModuleViewModel>>(profile.Definition);
+
+                _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+
+                Context.Output.WriteLine(T("Successfully activated profile: {0}.", profileName));
+            }
+            else
+            {
+                Context.Output.WriteLine(T("Profile not found."));
+            }
+        }
+
+        [CommandName("moduleprofiles inverse activate")]
+        [CommandHelp(@"moduleprofiles inverse activate <ProfileName>")]
+        public void InverseActivateProfile(string profileName)
+        {
+            var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
+
+            if (profile != null)
+            {
+                var serializer = new JavaScriptSerializer();
+                var modules = serializer.Deserialize<List<ModuleViewModel>>(profile.Definition);
+
+                _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+
+                Context.Output.WriteLine(T("Successfully inverse-activated profile: {0}.", profileName));
+            }
+            else
+            {
+                Context.Output.WriteLine(T("Profile not found."));
             }
         }
     }
