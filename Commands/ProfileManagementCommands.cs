@@ -31,27 +31,17 @@ namespace OrchardHUN.ModuleProfiles.Commands
         [CommandHelp(@"moduleprofiles activate <ProfileName>")]
         public void ActivateProfile(string profileName)
         {
-            var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
-
-            if (profile != null)
-            {
-                var serializer = new JavaScriptSerializer();
-                var modules = serializer.Deserialize<List<ModuleViewModel>>(profile.Definition);
-
-                _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-                _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-
-                Context.Output.WriteLine(T("Successfully activated profile: {0}.", profileName));
-            }
-            else
-            {
-                Context.Output.WriteLine(T("Profile not found."));
-            }
+            Activate(profileName, false);
         }
 
         [CommandName("moduleprofiles inverse activate")]
         [CommandHelp(@"moduleprofiles inverse activate <ProfileName>")]
         public void InverseActivateProfile(string profileName)
+        {
+            Activate(profileName, true);
+        }
+
+        private void Activate(string profileName, bool inverse)
         {
             var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
 
@@ -60,14 +50,23 @@ namespace OrchardHUN.ModuleProfiles.Commands
                 var serializer = new JavaScriptSerializer();
                 var modules = serializer.Deserialize<List<ModuleViewModel>>(profile.Definition);
 
-                _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-                _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-
-                Context.Output.WriteLine(T("Successfully inverse-activated profile: {0}.", profileName));
+                if (inverse)
+                {
+                    _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                    _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                    Context.Output.WriteLine(T("\nSuccessfully inverse-activated profile: {0}.", profileName));
+                }
+                else
+                {
+                    _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                    _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                    Context.Output.WriteLine(T("\nSuccessfully activated profile: {0}.", profileName));
+                }
             }
             else
             {
-                Context.Output.WriteLine(T("Profile not found."));
+                Context.Output.WriteLine(T("\nProfile not found. The available profiles are:"));
+                Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
             }
         }
     }

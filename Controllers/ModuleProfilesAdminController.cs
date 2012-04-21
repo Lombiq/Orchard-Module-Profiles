@@ -82,6 +82,8 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 if (_repository.Get(p => p.Name == model.Name) == null)
                 {
                     _repository.Create(new ModuleProfileRecord() { Name = model.Name });
+                    _repository.Flush();
+
                     _notifier.Add(NotifyType.Information, T("Successfully created profile: {0}.", model.Name));
                 }
                 else
@@ -149,6 +151,8 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
                 _repository.Delete(_repository.Fetch(p => p.Name == model.Name).FirstOrDefault());
+                _repository.Flush();
+
                 _notifier.Add(NotifyType.Information, T("Successfully deleted profile: {0}.", model.Name));
             }
             else
@@ -177,6 +181,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 profile.Definition = serializer.Serialize(included);
 
                 _repository.Update(profile);
+                _repository.Flush();
 
                 _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Current.Name));
             }

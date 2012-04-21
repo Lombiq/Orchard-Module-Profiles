@@ -47,6 +47,9 @@
             $.ajax({
                 type: "DELETE",
                 url: "@Url.Action("DeleteProfile")",
+                data: {
+                    Name: $("#profileList option:selected").val()
+                },
                 success: function() {
                     window.location.reload();
                 }
@@ -105,7 +108,7 @@
         {
             <tr>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "IncludeProfile(\"" + @i + "\")" })</td>
-                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { disabled = !Model.Current.Modules[i].Included })</td>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled)</td>
                 <td>
                     @Html.DisplayTextFor(m => Model.Current.Modules[i].Name)
                     @Html.HiddenFor(m => Model.Current.Modules[i].Name)
