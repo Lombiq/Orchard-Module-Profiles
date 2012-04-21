@@ -108,7 +108,14 @@
         {
             <tr>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "IncludeProfile(\"" + @i + "\")" })</td>
-                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled)</td>
+                @if (Model.Current.Modules[i].Included)
+                {
+                    <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled)</td>
+                }
+                else
+                {
+                    <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { disabled = true })</td>
+                }
                 <td>
                     @Html.DisplayTextFor(m => Model.Current.Modules[i].Name)
                     @Html.HiddenFor(m => Model.Current.Modules[i].Name)
