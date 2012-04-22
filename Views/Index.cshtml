@@ -48,6 +48,7 @@
                 type: "DELETE",
                 url: "@Url.Action("DeleteProfile")",
                 data: {
+                    __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
                     Name: $("#profileList option:selected").val()
                 },
                 success: function() {
