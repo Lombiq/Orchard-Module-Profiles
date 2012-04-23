@@ -2,7 +2,7 @@ Name: Module Profiles
 AntiForgery: enabled
 Author: The Orchard Hungary Team
 Website: http://orchardmoduleprofs.codeplex.com/
-Version: 1.0.2
+Version: 1.0.3
 OrchardVersion: 1.4
 Description: A module that extends the module switching functionality using profiles.
 Features:
@@ -10,3 +10,4 @@ Features:
 		Name: Module Profiles
         Description: A module for creating module profiles
 		Category: Developer
+		Dependencies: Orchard.jQuery
