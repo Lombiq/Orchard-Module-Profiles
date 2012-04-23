@@ -12,12 +12,12 @@ using OrchardHUN.ModuleProfiles.ViewModels;
 namespace OrchardHUN.ModuleProfiles.Commands
 {
     [OrchardFeature("OrchardHUN.ModuleProfiles")]
-    public class ProfileManagementCommands : DefaultOrchardCommandHandler
+    public class ProfileActivationCommands : DefaultOrchardCommandHandler
     {
         private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
 
-        public ProfileManagementCommands(
+        public ProfileActivationCommands(
             IRepository<ModuleProfileRecord> repository,
             IFeatureManager featureManager)
         {
