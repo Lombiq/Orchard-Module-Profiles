@@ -12,6 +12,8 @@
     }
 
     $(document).ready(function () {
+        $("tr:odd").addClass("oddRow");
+
         $("#viewSelectedProfile").click(function() {
             window.location.href = "/Modules/ModuleProfiles/" + $("#profileList option:selected").val();
         });
