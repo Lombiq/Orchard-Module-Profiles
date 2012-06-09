@@ -98,6 +98,50 @@ namespace OrchardHUN.ModuleProfiles.Controllers
         }
 
         [HttpPost]
+        public void SaveConfiguration()
+        {
+            var model = new ModuleProfileViewModel();
+
+            if (TryUpdateModel<ModuleProfileViewModel>(model))
+            {
+                var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module");
+                var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
+
+                foreach (var item in installedModules)
+                {
+                    model.Modules.Add(new ModuleViewModel()
+                    {
+                        Name = item.Name,
+                        Included = true,
+                        Enabled = enabledModules.Contains(item)
+                    });
+                }
+
+                var record = new ModuleProfileRecord();
+                var serializer = new JavaScriptSerializer();
+
+                record.Name = model.Name;
+                record.Definition = serializer.Serialize(model.Modules);
+
+                if (record.Definition.Length <= 4000)
+                {
+                    _repository.Create(record);
+                    _repository.Flush();
+
+                    _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name)); 
+                }
+                else
+                {
+                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: too many modules."));
+                }
+            }
+            else
+            {
+                _notifier.Add(NotifyType.Error, T("Saving configuration failed."));
+            }
+        }
+
+        [HttpPost]
         public void ActivateProfile()
         {
             var model = new ModuleProfileViewModel();

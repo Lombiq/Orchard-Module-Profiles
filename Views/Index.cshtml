@@ -61,10 +61,25 @@
         });
 
         $("#createNewProfile").click(function () {
-            var name = $("#newModuleNameField").val();
+            var name = $("#newProfileNameField").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("CreateProfile")",
+                data: {
+                    __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
+                    Name: name
+                },
+                success: function() {
+                    window.location.href = "/Modules/ModuleProfiles/" + name;
+                }
+            });           
+        });
+
+        $("#saveCurrentConfiguration").click(function () {
+            var name = $("#newProfileNameField").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SaveConfiguration")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
                     Name: name
@@ -95,15 +110,16 @@
 
 @using (Html.BeginFormAntiForgeryPost())
 {
-    @Html.TextBox("Name", "", new { id = "newModuleNameField" })
+    @Html.TextBox("Name", "", new { id = "newProfileNameField" })
     <input type="button" name="createProfile" id="createNewProfile" class="button" value="@T("Create New Profile")" />
+    <input type="button" name="saveConfiguration" id="saveCurrentConfiguration" class="button" value="@T("Save Current Configuration")" />
 }
 
 <br />
 <br />
 
 @if (Model.Current != null)
-{    
+{
     using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile"), FormMethod.Post))
     {
     <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name)</h1>
