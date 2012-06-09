@@ -66,6 +66,12 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                             model.Current.Modules.Add(new ModuleViewModel() { Name = item.Id });
                         }
                     }
+
+                    var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
+                    foreach (var item in installedModules)
+                    {
+                        model.CurrentProfileStates.Add(item.Id, enabledModules.Contains(item));
+                    }
                 }
             }
 

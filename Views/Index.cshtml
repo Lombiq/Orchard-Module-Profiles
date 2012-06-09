@@ -144,6 +144,7 @@
                 <td class="centeredColumn">#</td>
                 <td>@T("Included")</td>
                 <td>@T("Enabled")</td>
+                <td>@T("Current state")</td>
                 <td>@T("Profile name")</td>
             </tr>
         </thead>
@@ -161,6 +162,14 @@
                 else
                 {
                     <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { disabled = true })</td>
+                }
+                @if (@Model.CurrentProfileStates[Model.Current.Modules[i].Name])
+                {
+                    <td>@T("Enabled")</td>
+                }
+                else
+                {
+                    <td>@T("Disabled")</td>
                 }
                 <td>
                     @Html.DisplayTextFor(m => Model.Current.Modules[i].Name)
