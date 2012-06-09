@@ -59,6 +59,21 @@
                 }
             });           
         });
+
+        $("#createNewProfile").click(function () {
+            var name = $("#newModuleNameField").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CreateProfile")",
+                data: {
+                    __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
+                    Name: name
+                },
+                success: function() {
+                    window.location.href = "/Modules/ModuleProfiles/" + name;
+                }
+            });           
+        });
     });
 </script>
 
@@ -78,10 +93,10 @@
 <br />
 <br />
 
-@using (Html.BeginFormAntiForgeryPost(Url.Action("CreateProfile"), FormMethod.Post))
+@using (Html.BeginFormAntiForgeryPost())
 {
     @Html.TextBox("Name", "", new { id = "newModuleNameField" })
-    <button type="submit" class="primaryAction">@T("Create New Profile")</button>
+    <input type="button" name="createProfile" id="createNewProfile" class="button" value="@T("Create New Profile")" />
 }
 
 <br />

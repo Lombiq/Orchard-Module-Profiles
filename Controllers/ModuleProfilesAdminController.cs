@@ -73,7 +73,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateProfile()
+        public void CreateProfile()
         {
             var model = new ModuleProfileViewModel();
 
@@ -95,8 +95,6 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             {
                 _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
             }
-
-            return RedirectToAction("Index", new { profileName = model.Name });
         }
 
         [HttpPost]
