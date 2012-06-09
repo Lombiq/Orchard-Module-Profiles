@@ -20,10 +20,15 @@
 
 .oddRow
 {
-    background-color: #9BB36C;
+    background-color: #CCCCCC;
 }
 
 .centeredColumn
 {
     text-align: center;
+}
+
+.selectedRow
+{
+    background-color: #9BB36C;
 }

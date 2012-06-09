@@ -11,6 +11,14 @@
         else $("#Current_Modules_" + index + "__Enabled").attr("disabled", true);
     }
 
+    MouseOnRow = function(index) {
+        $("#row-" + index).addClass("selectedRow");
+    }
+
+    MouseOutRow = function(index) {
+        $("#row-" + index).removeClass("selectedRow");
+    }
+
     $(document).ready(function () {
         $("tr:odd").addClass("oddRow");
 
@@ -143,7 +151,7 @@
         @for (int i = 0; i < Model.Current.Modules.Count; i++)
         {
             var index = i + 1;
-            <tr>
+            <tr id="row-@index" onmouseover="MouseOnRow(@index)" onmouseout="MouseOutRow(@index)">
                 <td class="centeredColumn">@index</td>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "IncludeProfile(\"" + @i + "\")" })</td>
                 @if (Model.Current.Modules[i].Included)
