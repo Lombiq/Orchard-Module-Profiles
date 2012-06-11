@@ -128,9 +128,15 @@
 
 @if (Model.Current != null)
 {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#profileList").val("@Model.Current.Name").attr("selected", "selected");
+        });
+        </script>
+    
     using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile"), FormMethod.Post))
     {
-    <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name)</h1>
+    <h1>@T("Selected profile:\t")@Html.DisplayTextFor(m => Model.Current.Name) (@Model.Current.Modules.Count(m => m.Included))</h1>
         @Html.HiddenFor(m => Model.Current.Name)
     
     <button type="submit" class="primaryAction">@T("Save Profile")</button>
