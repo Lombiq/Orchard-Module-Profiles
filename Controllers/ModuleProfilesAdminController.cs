@@ -123,15 +123,15 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                     });
                 }
 
-                var record = new ModuleProfileRecord();
+                var profile = new ModuleProfileRecord();
                 var serializer = new JavaScriptSerializer();
 
-                record.Name = model.Name;
-                record.Definition = serializer.Serialize(model.Modules);
+                profile.Name = model.Name;
+                profile.Definition = serializer.Serialize(model.Modules);
 
-                if (record.Definition.Length <= 4000)
+                if (profile.Definition.Length <= 4000)
                 {
-                    _repository.Create(record);
+                    _repository.Create(profile);
                     _repository.Flush();
 
                     _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name)); 
@@ -226,12 +226,19 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 var serializer = new JavaScriptSerializer();
                 var profile = _repository.Fetch(p => p.Name == model.Current.Name).FirstOrDefault();
                 var included = model.Current.Modules.Where(m => m.Included);
-                profile.Definition = serializer.Serialize(included);
+                profile.Definition = serializer.Serialize(included);                
 
-                _repository.Update(profile);
-                _repository.Flush();
+                if (profile.Definition.Length <= 4000)
+                {
+                    _repository.Update(profile);
+                    _repository.Flush();
 
-                _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Current.Name));
+                    _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Current.Name));
+                }
+                else
+                {
+                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: too many modules."));
+                }
             }
             else
             {
