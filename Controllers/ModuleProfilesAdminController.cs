@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -129,16 +130,16 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 profile.Name = model.Name;
                 profile.Definition = serializer.Serialize(model.Modules);
 
-                if (profile.Definition.Length <= 4000)
+                try
                 {
                     _repository.Create(profile);
                     _repository.Flush();
 
                     _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name)); 
                 }
-                else
+                catch (InvalidOperationException)
                 {
-                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: too many modules."));
+                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: invalid operation."));
                 }
             }
             else
@@ -226,18 +227,18 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 var serializer = new JavaScriptSerializer();
                 var profile = _repository.Fetch(p => p.Name == model.Current.Name).FirstOrDefault();
                 var included = model.Current.Modules.Where(m => m.Included);
-                profile.Definition = serializer.Serialize(included);                
+                profile.Definition = serializer.Serialize(included);
 
-                if (profile.Definition.Length <= 4000)
+                try
                 {
-                    _repository.Update(profile);
+                    _repository.Create(profile);
                     _repository.Flush();
 
                     _notifier.Add(NotifyType.Information, T("Successfully saved profile: {0}.", model.Current.Name));
                 }
-                else
+                catch (InvalidOperationException)
                 {
-                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: too many modules."));
+                    _notifier.Add(NotifyType.Error, T("Saving profile failed: invalid operation."));
                 }
             }
             else
