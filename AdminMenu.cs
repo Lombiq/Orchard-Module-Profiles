@@ -1,6 +1,5 @@
 ﻿using Orchard.Localization;
 using Orchard.UI.Navigation;
-using Orchard.Security;
 
 namespace OrchardHUN.ModuleProfiles
 {

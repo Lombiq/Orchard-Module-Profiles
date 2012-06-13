@@ -118,7 +118,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 {
                     model.Modules.Add(new ModuleViewModel()
                     {
-                        Name = item.Name,
+                        Name = item.Id,
                         Included = true,
                         Enabled = enabledModules.Contains(item)
                     });

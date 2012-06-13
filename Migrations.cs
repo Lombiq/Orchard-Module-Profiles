@@ -1,7 +1,6 @@
 ﻿using Orchard.Data.Migration;
 using Orchard.Environment.Extensions;
 using OrchardHUN.ModuleProfiles.Models;
-using System.Collections.Generic;
 
 namespace OrchardHUN.ModuleProfiles
 {
