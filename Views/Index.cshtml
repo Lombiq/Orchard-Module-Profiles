@@ -6,16 +6,16 @@
 }
 
 <script type="text/javascript">
-    IncludeProfile = function(index) {
+    includeModuleInProfile = function(index) {
         if ($("#Current_Modules_" + index + "__Included").is(':checked')) $("#Current_Modules_" + index + "__Enabled").removeAttr("disabled");
         else $("#Current_Modules_" + index + "__Enabled").attr("disabled", true);
     }
 
-    MouseOnRow = function(index) {
+    onMouseOverRow = function(index) {
         $("#row-" + index).addClass("selectedRow");
     }
 
-    MouseOutRow = function(index) {
+    onMouseOutRow = function(index) {
         $("#row-" + index).removeClass("selectedRow");
     }
 
@@ -107,10 +107,10 @@
     @Html.Label("model", T("Here is a list of the available module profiles:").ToString())
     @Html.DropDownListFor(model => model.ProfileNames.Values, new SelectList(Model.ProfileNames.Values), new { id = "profileList" })
 
-    <input type="button" name="viewProfile" id="viewSelectedProfile" class="button" value="@T("View")" />
-    <input type="button" name="activateProfile" id="activateSelectedProfile" class="button" value="@T("Activate")" />
-    <input type="button" name="inverseActivateProfile" id="inverseActivateSelectedProfile" class="button" value="@T("Activate Inverse")" />
-    <input type="button" name="deleteProfile" id="deleteSelectedProfile" class="button" value="@T("Delete")" />
+    <input type="button" id="viewSelectedProfile" class="button" value="@T("View")" />
+    <input type="button" id="activateSelectedProfile" class="button" value="@T("Activate")" />
+    <input type="button" id="inverseActivateSelectedProfile" class="button" value="@T("Activate Inverse")" />
+    <input type="button" id="deleteSelectedProfile" class="button" value="@T("Delete")" />
 }
 
 <br />
@@ -119,8 +119,8 @@
 @using (Html.BeginFormAntiForgeryPost())
 {
     @Html.TextBox("Name", "", new { id = "newProfileNameField" })
-    <input type="button" name="createProfile" id="createNewProfile" class="button" value="@T("Create New Profile")" />
-    <input type="button" name="saveConfiguration" id="saveCurrentConfiguration" class="button" value="@T("Save Current Configuration")" />
+    <input type="button" id="createNewProfile" class="button" value="@T("Create New Profile")" />
+    <input type="button" id="saveCurrentConfiguration" class="button" value="@T("Save Current Configuration")" />
 }
 
 <br />
@@ -158,9 +158,9 @@
         @for (int i = 0; i < Model.Current.Modules.Count; i++)
         {
             var index = i + 1;
-            <tr id="row-@index" onmouseover="MouseOnRow(@index)" onmouseout="MouseOutRow(@index)">
+            <tr id="row-@index" onmouseover="onMouseOverRow(@index)" onmouseout="onMouseOutRow(@index)">
                 <td class="centeredColumn">@index</td>
-                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "IncludeProfile(\"" + @i + "\")" })</td>
+                <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "includeModuleInProfile(\"" + @i + "\")" })</td>
                 @if (Model.Current.Modules[i].Included)
                 {
                     <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled)</td>
