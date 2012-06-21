@@ -23,7 +23,7 @@
         $("tr:odd").addClass("oddRow");
 
         $("#viewSelectedProfile").click(function() {
-            window.location.href = "/Modules/ModuleProfiles/" + $("#profileList option:selected").val();
+            window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
         });
 
         $("#activateSelectedProfile").click(function () {
@@ -78,7 +78,7 @@
                     Name: name
                 },
                 success: function() {
-                    window.location.href = "/Modules/ModuleProfiles/" + name;
+                    window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
                 }
             });           
         });
@@ -93,7 +93,7 @@
                     Name: name
                 },
                 success: function() {
-                    window.location.href = "/Modules/ModuleProfiles/" + name;
+                    window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
                 }
             });           
         });

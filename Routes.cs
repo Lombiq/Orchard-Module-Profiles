@@ -17,25 +17,6 @@ namespace OrchardHUN.ModuleProfiles
             return new[] {
                 new RouteDescriptor
                 {
-                    Priority = 2,
-                    Route = new Route(
-                        "Modules/ModuleProfiles/{profileName}",
-                        new RouteValueDictionary
-                        {
-                            {"area", "OrchardHUN.ModuleProfiles"},
-                            {"controller", "ModuleProfilesAdmin"},
-                            {"action", "Index"},
-                        },
-                        new RouteValueDictionary (),
-                        new RouteValueDictionary
-                        {
-                            {"area", "OrchardHUN.ModuleProfiles"}
-                        },
-                        new MvcRouteHandler()
-                    )
-                },
-                new RouteDescriptor
-                {
                     Priority = 1,
                     Route = new Route(
                         "Modules/ModuleProfiles",
