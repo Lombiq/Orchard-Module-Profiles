@@ -12,27 +12,27 @@
     }
 
     onMouseOverRow = function(index) {
-        $("#row-" + index).addClass("selectedRow");
+        $("#moduleprofiles-row-" + index).addClass("moduleprofiles-selected-row");
     }
 
     onMouseOutRow = function(index) {
-        $("#row-" + index).removeClass("selectedRow");
+        $("#moduleprofiles-row-" + index).removeClass("moduleprofiles-selected-row");
     }
 
     $(document).ready(function () {
-        $("tr:odd").addClass("oddRow");
+        $("tr:odd").addClass("moduleprofiles-odd-row");
 
-        $("#viewSelectedProfile").click(function() {
-            window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
+        $("#moduleprofiles-view").click(function() {
+            window.location = "@Url.Action("Index")" + "?profileName=" + $("#moduleprofiles-list option:selected").val();
         });
 
-        $("#activateSelectedProfile").click(function () {
+        $("#moduleprofiles-activate").click(function () {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ActivateProfile")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
-                    Name: $("#profileList option:selected").val()
+                    Name: $("#moduleprofiles-list option:selected").val()
                 },
                 success: function() {
                     window.location.reload();
@@ -40,13 +40,13 @@
             });           
         });
 
-        $("#inverseActivateSelectedProfile").click(function () {
+        $("#moduleprofiles-inverse-activate").click(function () {
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("InverseActivateProfile")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
-                    Name: $("#profileList option:selected").val()
+                    Name: $("#moduleprofiles-list option:selected").val()
                 },
                 success: function() {
                     window.location.reload();
@@ -54,13 +54,13 @@
             });           
         });
 
-        $("#deleteSelectedProfile").click(function () {
+        $("#moduleprofiles-delete").click(function () {
             $.ajax({
                 type: "DELETE",
                 url: "@Url.Action("DeleteProfile")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
-                    Name: $("#profileList option:selected").val()
+                    Name: $("#moduleprofiles-list option:selected").val()
                 },
                 success: function() {
                     window.location.reload();
@@ -68,8 +68,8 @@
             });           
         });
 
-        $("#createNewProfile").click(function () {
-            var name = $("#newProfileNameField").val();
+        $("#moduleprofiles-new").click(function () {
+            var name = $("#moduleprofiles-name").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("CreateProfile")",
@@ -78,13 +78,13 @@
                     Name: name
                 },
                 success: function() {
-                    window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
+                    window.location = "@Url.Action("Index")" + "?profileName=" + name;
                 }
             });           
         });
 
-        $("#saveCurrentConfiguration").click(function () {
-            var name = $("#newProfileNameField").val();
+        $("#moduleprofiles-save-configuration").click(function () {
+            var name = $("#moduleprofiles-name").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("SaveConfiguration")",
@@ -93,7 +93,7 @@
                     Name: name
                 },
                 success: function() {
-                    window.location = "@Url.Action("Index")" + "?profileName=" + $("#profileList option:selected").val();
+                    window.location = "@Url.Action("Index")" + "?profileName=" + name;
                 }
             });           
         });
@@ -105,12 +105,12 @@
 @using (Html.BeginFormAntiForgeryPost())
 {
     @Html.Label("model", T("Here is a list of the available module profiles:").ToString())
-    @Html.DropDownListFor(model => model.ProfileNames.Values, new SelectList(Model.ProfileNames.Values), new { id = "profileList" })
+    @Html.DropDownListFor(model => model.ProfileNames.Values, new SelectList(Model.ProfileNames.Values), new { id = "moduleprofiles-list" })
 
-    <input type="button" id="viewSelectedProfile" class="button" value="@T("View")" />
-    <input type="button" id="activateSelectedProfile" class="button" value="@T("Activate")" />
-    <input type="button" id="inverseActivateSelectedProfile" class="button" value="@T("Activate Inverse")" />
-    <input type="button" id="deleteSelectedProfile" class="button" value="@T("Delete")" />
+    <input type="button" id="moduleprofiles-view" class="button" value="@T("View")" />
+    <input type="button" id="moduleprofiles-activate" class="button" value="@T("Activate")" />
+    <input type="button" id="moduleprofiles-inverse-activate" class="button" value="@T("Activate Inverse")" />
+    <input type="button" id="moduleprofiles-delete" class="button" value="@T("Delete")" />
 }
 
 <br />
@@ -118,9 +118,9 @@
 
 @using (Html.BeginFormAntiForgeryPost())
 {
-    @Html.TextBox("Name", "", new { id = "newProfileNameField" })
-    <input type="button" id="createNewProfile" class="button" value="@T("Create New Profile")" />
-    <input type="button" id="saveCurrentConfiguration" class="button" value="@T("Save Current Configuration")" />
+    @Html.TextBox("Name", "", new { id = "moduleprofiles-name" })
+    <input type="button" id="moduleprofiles-new" class="button" value="@T("Create New Profile")" />
+    <input type="button" id="moduleprofiles-save-configuration" class="button" value="@T("Save Current Configuration")" />
 }
 
 <br />
@@ -130,9 +130,9 @@
 {
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#profileList").val("@Model.Current.Name").attr("selected", "selected");
+            $("#moduleprofiles-list").val("@Model.Current.Name").attr("selected", "selected");
         });
-        </script>
+    </script>
     
     using (Html.BeginFormAntiForgeryPost(Url.Action("SaveProfile"), FormMethod.Post))
     {
@@ -144,10 +144,10 @@
     <br />
     <br />
         
-    <table id="moduleTable">
+    <table id="moduleprofiles-table">
         <thead>
             <tr>
-                <td class="centeredColumn">#</td>
+                <td class="moduleprofiles-centered-column">#</td>
                 <td>@T("Included")</td>
                 <td>@T("Enabled")</td>
                 <td>@T("Current state")</td>
@@ -158,8 +158,8 @@
         @for (int i = 0; i < Model.Current.Modules.Count; i++)
         {
             var index = i + 1;
-            <tr id="row-@index" onmouseover="onMouseOverRow(@index)" onmouseout="onMouseOutRow(@index)">
-                <td class="centeredColumn">@index</td>
+            <tr id="moduleprofiles-row-@index" onmouseover="onMouseOverRow(@index)" onmouseout="onMouseOutRow(@index)">
+                <td class="moduleprofiles-centered-column">@index</td>
                 <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Included, new { onClick = "includeModuleInProfile(\"" + @i + "\")" })</td>
                 @if (Model.Current.Modules[i].Included)
                 {

@@ -1,34 +1,34 @@
-﻿#profileList
+﻿#moduleprofiles-list
 {
     width: 200px;
 }
 
-#newProfileNameField
+#moduleprofiles-name
 {
     width: 200px;
 }
 
-#moduleTable thead td
+#moduleprofiles-table thead td
 {
     border-bottom: 1px solid Black;
 }
 
-#moduleTable td
+#moduleprofiles-table td
 {
     min-width: 100px;
 }
 
-.oddRow
+.moduleprofiles-odd-row
 {
     background-color: #CCCCCC;
 }
 
-.centeredColumn
-{
-    text-align: center;
-}
-
-.selectedRow
+.moduleprofiles-selected-row
 {
     background-color: #9BB36C;
+}
+
+.moduleprofiles-centered-column
+{
+    text-align: center;
 }
