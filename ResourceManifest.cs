@@ -10,7 +10,7 @@ namespace OrchardHUN.ModuleProfiles
         {
             var manifest = builder.Add();
 
-            manifest.DefineStyle("ModuleProfiles").SetUrl("orchardhun-moduleprofiles.css");
+            manifest.DefineStyle("OrchardHUN.ModuleProfiles.Style").SetUrl("orchardhun-moduleprofiles.css");
         }
     }
 }
