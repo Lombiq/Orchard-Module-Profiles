@@ -34,9 +34,23 @@ namespace OrchardHUN.ModuleProfiles.Commands
             Activate(profileName, false);
         }
 
+        [CommandName("modprofs act")]
+        [CommandHelp(@"modprofs act <ProfileName>")]
+        public void ActivateProfileShort(string profileName)
+        {
+            Activate(profileName, false);
+        }
+
         [CommandName("moduleprofiles inverse activate")]
         [CommandHelp(@"moduleprofiles inverse activate <ProfileName>")]
         public void InverseActivateProfile(string profileName)
+        {
+            Activate(profileName, true);
+        }
+
+        [CommandName("modprofs inv")]
+        [CommandHelp(@"modprofs inv <ProfileName>")]
+        public void InverseActivateProfileShort(string profileName)
         {
             Activate(profileName, true);
         }
