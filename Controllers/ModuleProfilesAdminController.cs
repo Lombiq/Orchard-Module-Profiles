@@ -55,9 +55,10 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                     {
                         Name = profileName,
                         Modules = serializer.Deserialize<List<ModuleViewModel>>
-                            (profilesData.Find(p => p.Name == profileName).Definition).OrderBy(m => m.Enabled).ThenBy(m => m.Name).ToList()
+                        (profilesData.Find(p => p.Name == profileName).Definition)
                             ?? new List<ModuleViewModel>()
                     };
+                    model.Current.Modules.OrderBy(m => m.Enabled).ThenBy(m => m.Name);
 
                     var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module").OrderBy(m => m.Id);
                     foreach (var item in installedModules)
