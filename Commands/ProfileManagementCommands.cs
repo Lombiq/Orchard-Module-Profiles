@@ -12,12 +12,12 @@ using OrchardHUN.ModuleProfiles.ViewModels;
 namespace OrchardHUN.ModuleProfiles.Commands
 {
     [OrchardFeature("OrchardHUN.ModuleProfiles")]
-    public class ProfileActivationCommands : DefaultOrchardCommandHandler
+    public class ProfileManagementCommands : DefaultOrchardCommandHandler
     {
         private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
 
-        public ProfileActivationCommands(
+        public ProfileManagementCommands(
             IRepository<ModuleProfileRecord> repository,
             IFeatureManager featureManager)
         {
@@ -68,18 +68,18 @@ namespace OrchardHUN.ModuleProfiles.Commands
                 {
                     _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
                     _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-                    Context.Output.WriteLine("\n" + T("Successfully inverse-activated profile: {0}.", profileName));
+                    Context.Output.WriteLine(T("Successfully inverse-activated profile: {0}.", profileName));
                 }
                 else
                 {
                     _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
                     _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-                    Context.Output.WriteLine("\n" + T("Successfully activated profile: {0}.", profileName));
+                    Context.Output.WriteLine(T("Successfully activated profile: {0}.", profileName));
                 }
             }
             else
             {
-                Context.Output.WriteLine("\n" + T("Profile not found. The available profiles are:"));
+                Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
                 Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
             }
         }
