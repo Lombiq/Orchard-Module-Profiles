@@ -68,18 +68,18 @@ namespace OrchardHUN.ModuleProfiles.Commands
                 {
                     _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
                     _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-                    Context.Output.WriteLine(T("\nSuccessfully inverse-activated profile: {0}.", profileName));
+                    Context.Output.WriteLine("\n" + T("Successfully inverse-activated profile: {0}.", profileName));
                 }
                 else
                 {
                     _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
                     _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-                    Context.Output.WriteLine(T("\nSuccessfully activated profile: {0}.", profileName));
+                    Context.Output.WriteLine("\n" + T("Successfully activated profile: {0}.", profileName));
                 }
             }
             else
             {
-                Context.Output.WriteLine(T("\nProfile not found. The available profiles are:"));
+                Context.Output.WriteLine("\n" + T("Profile not found. The available profiles are:"));
                 Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
             }
         }
