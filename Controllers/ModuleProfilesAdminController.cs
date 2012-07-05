@@ -140,7 +140,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
                 var modules = new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>
-                            (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
+                    (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
 
                 _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
                 _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
@@ -159,7 +159,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             {
                 var serializer = new JavaScriptSerializer();
                 var modules = serializer.Deserialize<List<ModuleViewModel>>
-                            (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
+                    (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
 
                 _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
                 _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));

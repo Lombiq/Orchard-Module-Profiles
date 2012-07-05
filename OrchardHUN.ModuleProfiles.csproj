@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
-    <Compile Include="Commands\ProfileActivationCommands.cs" />
+    <Compile Include="Commands\ProfileManagementCommands.cs" />
     <Compile Include="Controllers\ModuleProfilesAdminController.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\ModuleProfileRecord.cs" />

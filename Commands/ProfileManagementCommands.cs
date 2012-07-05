@@ -70,6 +70,20 @@ namespace OrchardHUN.ModuleProfiles.Commands
             Save(profileName);
         }
 
+        [CommandName("moduleprofiles delete")]
+        [CommandHelp(@"moduleprofiles delete <ProfileName>")]
+        public void DeleteProfile(string profileName)
+        {
+            Delete(profileName);
+        }
+
+        [CommandName("modprofs del")]
+        [CommandHelp(@"modprofs del <ProfileName>")]
+        public void DeleteProfileShort(string profileName)
+        {
+            Delete(profileName);
+        }
+
         private void Activate(string profileName, bool inverse)
         {
             var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
@@ -130,6 +144,24 @@ namespace OrchardHUN.ModuleProfiles.Commands
                 }
             }
             else Context.Output.WriteLine(T("A profile with this name already exists."));
+        }
+
+        private void Delete(string profileName)
+        {
+            var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
+
+            if (profile == null)
+            {
+                Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
+                Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
+            }
+            else
+            {
+                _repository.Delete(profile);
+                _repository.Flush();
+
+                Context.Output.WriteLine(T("Successfully deleted profile: {0}.", profileName));
+            }
         }
     }
 }
