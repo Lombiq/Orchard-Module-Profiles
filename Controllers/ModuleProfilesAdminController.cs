@@ -111,35 +111,42 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
-                var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module");
-                var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
-
-                foreach (var item in installedModules)
+                if (_repository.Get(p => p.Name == model.Name) == null)
                 {
-                    model.Modules.Add(new ModuleViewModel()
+                    var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module");
+                    var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
+
+                    foreach (var item in installedModules)
                     {
-                        Name = item.Id,
-                        Included = true,
-                        Enabled = enabledModules.Contains(item)
-                    });
+                        model.Modules.Add(new ModuleViewModel()
+                        {
+                            Name = item.Id,
+                            Included = true,
+                            Enabled = enabledModules.Contains(item)
+                        });
+                    }
+
+                    var profile = new ModuleProfileRecord();
+                    var serializer = new JavaScriptSerializer();
+
+                    profile.Name = model.Name;
+                    profile.Definition = serializer.Serialize(model.Modules);
+
+                    try
+                    {
+                        _repository.Create(profile);
+                        _repository.Flush();
+
+                        _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name));
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        _notifier.Add(NotifyType.Error, T("Saving configuration failed: invalid database operation."));
+                    } 
                 }
-
-                var profile = new ModuleProfileRecord();
-                var serializer = new JavaScriptSerializer();
-
-                profile.Name = model.Name;
-                profile.Definition = serializer.Serialize(model.Modules);
-
-                try
+                else
                 {
-                    _repository.Create(profile);
-                    _repository.Flush();
-
-                    _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name)); 
-                }
-                catch (InvalidOperationException)
-                {
-                    _notifier.Add(NotifyType.Error, T("Saving configuration failed: invalid operation."));
+                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
                 }
             }
             else
