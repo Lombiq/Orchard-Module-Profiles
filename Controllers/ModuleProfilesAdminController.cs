@@ -43,18 +43,14 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (profilesData != null || profilesData.Count > 0)
             {
-                foreach (var item in profilesData)
-                {
-                    model.ProfileNames.Add(item.Id, item.Name);
-                }
+                foreach (var item in profilesData) model.ProfileNames.Add(item.Id, item.Name);
 
                 if (!string.IsNullOrEmpty(profileName) && model.ProfileNames.ContainsValue(profileName))
                 {
-                    var serializer = new JavaScriptSerializer();
                     model.Current = new ModuleProfileViewModel()
                     {
                         Name = profileName,
-                        Modules = (serializer.Deserialize<List<ModuleViewModel>>
+                        Modules = (new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>
                         (profilesData.Find(p => p.Name == profileName).Definition)
                             ?? new List<ModuleViewModel>()).OrderBy(m => m.Enabled).ThenBy(m => m.Name).ToList()
                     };
@@ -93,15 +89,9 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
                     _notifier.Add(NotifyType.Information, T("Successfully created profile: {0}.", model.Name));
                 }
-                else
-                {
-                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
-                }
+                else _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
             }
-            else
-            {
-                _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
-            }
+            else _notifier.Add(NotifyType.Error, T("Creating profile failed: {0}.", model.Name));
         }
 
         [HttpPost]
@@ -115,7 +105,6 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                 {
                     var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module");
                     var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
-
                     foreach (var item in installedModules)
                     {
                         model.Modules.Add(new ModuleViewModel()
@@ -126,15 +115,9 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                         });
                     }
 
-                    var profile = new ModuleProfileRecord();
-                    var serializer = new JavaScriptSerializer();
-
-                    profile.Name = model.Name;
-                    profile.Definition = serializer.Serialize(model.Modules);
-
                     try
                     {
-                        _repository.Create(profile);
+                        _repository.Create(new ModuleProfileRecord() { Name = model.Name, Definition = new JavaScriptSerializer().Serialize(model.Modules) });
                         _repository.Flush();
 
                         _notifier.Add(NotifyType.Information, T("Successfully saved configuration to profile: {0}.", model.Name));
@@ -144,15 +127,9 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                         _notifier.Add(NotifyType.Error, T("Saving configuration failed: invalid database operation."));
                     } 
                 }
-                else
-                {
-                    _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
-                }
+                else _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
             }
-            else
-            {
-                _notifier.Add(NotifyType.Error, T("Saving configuration failed."));
-            }
+            else _notifier.Add(NotifyType.Error, T("Saving configuration failed."));
         }
 
         [HttpPost]
@@ -162,8 +139,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
-                var serializer = new JavaScriptSerializer();
-                var modules = serializer.Deserialize<List<ModuleViewModel>>
+                var modules = new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>
                             (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
 
                 _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
@@ -171,10 +147,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
                 _notifier.Add(NotifyType.Information, T("Successfully activated profile: {0}.", model.Name));
             }
-            else
-            {
-                _notifier.Add(NotifyType.Error, T("Activating profile failed."));
-            }
+            else _notifier.Add(NotifyType.Error, T("Activating profile failed."));
         }
 
         [HttpPost]
@@ -193,10 +166,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
                 _notifier.Add(NotifyType.Information, T("Successfully inverse-activated profile: {0}.", model.Name));
             }
-            else
-            {
-                _notifier.Add(NotifyType.Error, T("Activating profile failed."));
-            }
+            else _notifier.Add(NotifyType.Error, T("Activating profile failed."));
         }
 
         [HttpDelete]
@@ -213,14 +183,8 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(model.Name))
-                {
-                    _notifier.Add(NotifyType.Error, T("No profile selected."));
-                }
-                else
-                {
-                    _notifier.Add(NotifyType.Error, T("Deleting profile failed: {0}.", model.Name));
-                }
+                if (string.IsNullOrEmpty(model.Name)) _notifier.Add(NotifyType.Error, T("No profile selected."));
+                else _notifier.Add(NotifyType.Error, T("Deleting profile failed: {0}.", model.Name));
             }
         }
 
@@ -231,10 +195,9 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (TryUpdateModel<ProfileListViewModel>(model))
             {
-                var serializer = new JavaScriptSerializer();
                 var profile = _repository.Fetch(p => p.Name == model.Current.Name).FirstOrDefault();
                 var included = model.Current.Modules.Where(m => m.Included);
-                profile.Definition = serializer.Serialize(included);
+                profile.Definition = new JavaScriptSerializer().Serialize(included);
 
                 try
                 {
@@ -248,10 +211,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                     _notifier.Add(NotifyType.Error, T("Saving profile failed: invalid operation."));
                 }
             }
-            else
-            {
-                _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Current.Name));
-            }
+            else _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Current.Name));
 
             return RedirectToAction("Index", new { profileName = model.Current.Name });
         }
