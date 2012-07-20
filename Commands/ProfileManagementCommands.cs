@@ -88,7 +88,6 @@ namespace OrchardHUN.ModuleProfiles.Commands
         [CommandHelp(@"moduleprofiles list")]
         public void ListAvailableProfiles()
         {
-            Context.Output.WriteLine(T("The available profiles are:"));
             ListProfiles();
         }
 
@@ -96,7 +95,6 @@ namespace OrchardHUN.ModuleProfiles.Commands
         [CommandHelp(@"modprofs lst")]
         public void ListAvailableProfilesShort()
         {
-            Context.Output.WriteLine(T("The available profiles are:"));
             ListProfiles();
         }
 
@@ -106,8 +104,7 @@ namespace OrchardHUN.ModuleProfiles.Commands
 
             if (profile != null)
             {
-                var serializer = new JavaScriptSerializer();
-                var modules = serializer.Deserialize<List<ModuleViewModel>>(profile.Definition);
+                var modules = new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>(profile.Definition);
 
                 if (inverse)
                 {
@@ -124,8 +121,8 @@ namespace OrchardHUN.ModuleProfiles.Commands
             }
             else
             {
-                Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
-                ListProfiles();
+                Context.Output.WriteLine(T("Profile {0} not found. The available profiles are:", profileName));
+                PrintProfiles();
             }
         }
 
@@ -168,8 +165,8 @@ namespace OrchardHUN.ModuleProfiles.Commands
 
             if (profile == null)
             {
-                Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
-                ListProfiles();
+                Context.Output.WriteLine(T("Profile {0} not found. The available profiles are:", profileName));
+                PrintProfiles();
             }
             else
             {
@@ -181,6 +178,12 @@ namespace OrchardHUN.ModuleProfiles.Commands
         }
 
         private void ListProfiles()
+        {
+            Context.Output.WriteLine(T("The available profiles are:"));
+            PrintProfiles();
+        }
+
+        private void PrintProfiles()
         {
             Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
         }
