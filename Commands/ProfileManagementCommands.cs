@@ -84,6 +84,22 @@ namespace OrchardHUN.ModuleProfiles.Commands
             Delete(profileName);
         }
 
+        [CommandName("moduleprofiles list")]
+        [CommandHelp(@"moduleprofiles list")]
+        public void ListAvailableProfiles()
+        {
+            Context.Output.WriteLine(T("The available profiles are:"));
+            ListProfiles();
+        }
+
+        [CommandName("modprofs lst")]
+        [CommandHelp(@"modprofs lst")]
+        public void ListAvailableProfilesShort()
+        {
+            Context.Output.WriteLine(T("The available profiles are:"));
+            ListProfiles();
+        }
+
         private void Activate(string profileName, bool inverse)
         {
             var profile = _repository.Fetch(p => p.Name == profileName).FirstOrDefault();
@@ -109,7 +125,7 @@ namespace OrchardHUN.ModuleProfiles.Commands
             else
             {
                 Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
-                Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
+                ListProfiles();
             }
         }
 
@@ -153,7 +169,7 @@ namespace OrchardHUN.ModuleProfiles.Commands
             if (profile == null)
             {
                 Context.Output.WriteLine(T("Profile not found. The available profiles are:"));
-                Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
+                ListProfiles();
             }
             else
             {
@@ -162,6 +178,11 @@ namespace OrchardHUN.ModuleProfiles.Commands
 
                 Context.Output.WriteLine(T("Successfully deleted profile: {0}.", profileName));
             }
+        }
+
+        private void ListProfiles()
+        {
+            Context.Output.WriteLine(string.Join(", ", _repository.Table.ToList().Select(p => p.Name)));
         }
     }
 }
