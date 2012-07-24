@@ -67,18 +67,10 @@ namespace OrchardHUN.ModuleProfiles
                     }
                 };
 
-                var model = new ModuleProfileViewModel()
-                {
-                    Name = "Developer",
-                    Modules = modules
-                };
-
-                var serializer = new JavaScriptSerializer();
-
                 var profile = new ModuleProfileRecord()
                 {
-                    Name = model.Name,
-                    Definition = serializer.Serialize(model.Modules)
+                    Name = "Developer",
+                    Definition = new JavaScriptSerializer().Serialize(modules)
                 };
 
                 _repository.Create(profile);
@@ -139,18 +131,10 @@ namespace OrchardHUN.ModuleProfiles
                     }
                 };
 
-                var model = new ModuleProfileViewModel()
-                {
-                    Name = "Production",
-                    Modules = modules
-                };
-
-                var serializer = new JavaScriptSerializer();
-
                 var profile = new ModuleProfileRecord()
                 {
-                    Name = model.Name,
-                    Definition = serializer.Serialize(model.Modules)
+                    Name = "Production",
+                    Definition = new JavaScriptSerializer().Serialize(modules)
                 };
 
                 _repository.Create(profile);
