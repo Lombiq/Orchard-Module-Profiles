@@ -11,6 +11,7 @@ using Orchard.UI.Admin;
 using Orchard.UI.Notify;
 using OrchardHUN.ModuleProfiles.Models;
 using OrchardHUN.ModuleProfiles.ViewModels;
+using OrchardHUN.ModuleProfiles.Services;
 
 namespace OrchardHUN.ModuleProfiles.Controllers
 {
@@ -20,6 +21,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
     {
         private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
+        private readonly IModuleProfilesService _moduleProfilesService;
         private readonly INotifier _notifier;
 
         public Localizer T { get; set; }
@@ -27,10 +29,12 @@ namespace OrchardHUN.ModuleProfiles.Controllers
         public ModuleProfilesAdminController(
             IRepository<ModuleProfileRecord> repository,
             IFeatureManager featureManager,
+            IModuleProfilesService moduleProfilesService,
             INotifier notifier)
         {
             _repository = repository;
             _featureManager = featureManager;
+            _moduleProfilesService = moduleProfilesService;
             _notifier = notifier;
 
             T = NullLocalizer.Instance;
@@ -139,11 +143,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
-                var modules = new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>
-                    (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
-
-                _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-                _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                Activate(model, false);
 
                 _notifier.Add(NotifyType.Information, T("Successfully activated profile: {0}.", model.Name));
             }
@@ -157,12 +157,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
 
             if (TryUpdateModel<ModuleProfileViewModel>(model))
             {
-                var serializer = new JavaScriptSerializer();
-                var modules = serializer.Deserialize<List<ModuleViewModel>>
-                    (_repository.Fetch(p => p.Name == model.Name).FirstOrDefault().Definition);
-
-                _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-                _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                Activate(model, true);
 
                 _notifier.Add(NotifyType.Information, T("Successfully inverse-activated profile: {0}.", model.Name));
             }
@@ -214,6 +209,15 @@ namespace OrchardHUN.ModuleProfiles.Controllers
             else _notifier.Add(NotifyType.Error, T("Saving profile failed.", model.Current.Name));
 
             return RedirectToAction("Index", new { profileName = model.Current.Name });
+        }
+
+        private void Activate(ModuleProfileViewModel profile, bool inverse)
+        {
+            var modules = new JavaScriptSerializer().Deserialize<List<ModuleViewModel>>
+                    (_repository.Fetch(p => p.Name == profile.Name).FirstOrDefault().Definition);
+
+            if (inverse) _moduleProfilesService.InverseActivateProfile(modules);
+            else _moduleProfilesService.ActivateProfile(modules);
         }
     }
 }

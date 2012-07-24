@@ -9,6 +9,7 @@ using Orchard.Environment.Features;
 using Orchard.Localization;
 using OrchardHUN.ModuleProfiles.Models;
 using OrchardHUN.ModuleProfiles.ViewModels;
+using OrchardHUN.ModuleProfiles.Services;
 
 namespace OrchardHUN.ModuleProfiles.Commands
 {
@@ -17,13 +18,16 @@ namespace OrchardHUN.ModuleProfiles.Commands
     {
         private readonly IRepository<ModuleProfileRecord> _repository;
         private readonly IFeatureManager _featureManager;
+        private readonly IModuleProfilesService _moduleProfilesService;
 
         public ProfileManagementCommands(
             IRepository<ModuleProfileRecord> repository,
-            IFeatureManager featureManager)
+            IFeatureManager featureManager,
+            IModuleProfilesService moduleProfilesService)
         {
             _repository = repository;
             _featureManager = featureManager;
+            _moduleProfilesService = moduleProfilesService;
 
             T = NullLocalizer.Instance;
         }
@@ -108,14 +112,12 @@ namespace OrchardHUN.ModuleProfiles.Commands
 
                 if (inverse)
                 {
-                    _featureManager.EnableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
-                    _featureManager.DisableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
+                    _moduleProfilesService.InverseActivateProfile(modules);
                     Context.Output.WriteLine(T("Successfully inverse-activated profile: {0}.", profileName));
                 }
                 else
                 {
-                    _featureManager.EnableFeatures(modules.Where(m => m.Enabled).Select(m => m.Name));
-                    _featureManager.DisableFeatures(modules.Where(m => !m.Enabled).Select(m => m.Name));
+                    _moduleProfilesService.ActivateProfile(modules);
                     Context.Output.WriteLine(T("Successfully activated profile: {0}.", profileName));
                 }
             }
