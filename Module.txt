@@ -2,8 +2,8 @@ Name: Module Profiles
 AntiForgery: enabled
 Author: The Orchard Hungary Team
 Website: http://orchardmoduleprofs.codeplex.com/
-Version: 1.1.0
-OrchardVersion: 1.4
+Version: 1.1.5
+OrchardVersion: 1.5.1
 Description: A module that extends the module switching functionality using profiles.
 Features:
     OrchardHUN.ModuleProfiles:
