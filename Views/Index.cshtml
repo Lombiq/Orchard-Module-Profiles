@@ -27,29 +27,31 @@
         });
 
         $("#moduleprofiles-activate").click(function () {
+            var name = $("#moduleprofiles-list option:selected").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ActivateProfile")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
-                    Name: $("#moduleprofiles-list option:selected").val()
+                    Name: name
                 },
                 success: function() {
-                    window.location.reload();
+                    window.location = "@Url.Action("Index")" + "?profileName=" + name;
                 }
             });           
         });
 
         $("#moduleprofiles-inverse-activate").click(function () {
+            var name = $("#moduleprofiles-list option:selected").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("InverseActivateProfile")",
                 data: {
                     __RequestVerificationToken: $(':input[name="__RequestVerificationToken"]').val(),
-                    Name: $("#moduleprofiles-list option:selected").val()
+                    Name: name
                 },
                 success: function() {
-                    window.location.reload();
+                    window.location = "@Url.Action("Index")" + "?profileName=" + name;
                 }
             });           
         });
@@ -63,7 +65,7 @@
                     Name: $("#moduleprofiles-list option:selected").val()
                 },
                 success: function() {
-                    window.location.reload();
+                    window.location = "@Url.Action("Index")";
                 }
             });           
         });
