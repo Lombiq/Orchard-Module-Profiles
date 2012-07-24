@@ -169,7 +169,7 @@
                 {
                     <td>@Html.CheckBoxFor(m => Model.Current.Modules[i].Enabled, new { disabled = true })</td>
                 }
-                @if (@Model.CurrentProfileStates[Model.Current.Modules[i].Name])
+                @if (@Model.Current.Modules[i].State)
                 {
                     <td>@T("Enabled")</td>
                 }

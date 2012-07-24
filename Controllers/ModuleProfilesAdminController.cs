@@ -59,20 +59,18 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                             ?? new List<ModuleViewModel>()).OrderBy(m => m.Enabled).ThenBy(m => m.Name).ToList()
                     };
 
-                    var installedModules = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module").OrderBy(m => m.Id);
-                    foreach (var item in installedModules)
+                    var installedModulesIds = _featureManager.GetAvailableFeatures().Where(f => f.Extension.ExtensionType == "Module").OrderBy(m => m.Id).Select(m => m.Id);
+                    model.Current.Modules.RemoveAll(m => !installedModulesIds.Contains(m.Name));
+                    foreach (var item in installedModulesIds)
                     {
-                        if (model.Current.Modules.Find(m => m.Name == item.Id) == null)
+                        if (model.Current.Modules.Find(m => m.Name == item) == null)
                         {
-                            model.Current.Modules.Add(new ModuleViewModel() { Name = item.Id });
+                            model.Current.Modules.Add(new ModuleViewModel() { Name = item });
                         }
                     }
 
-                    var enabledModules = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module");
-                    foreach (var item in installedModules)
-                    {
-                        model.CurrentProfileStates.Add(item.Id, enabledModules.Contains(item));
-                    }
+                    var enabledModulesIds = _featureManager.GetEnabledFeatures().Where(f => f.Extension.ExtensionType == "Module").Select(m => m.Id);
+                    foreach (var item in model.Current.Modules) item.State = enabledModulesIds.Contains(item.Name);
                 }
             }
 
@@ -129,7 +127,7 @@ namespace OrchardHUN.ModuleProfiles.Controllers
                     catch (InvalidOperationException)
                     {
                         _notifier.Add(NotifyType.Error, T("Saving configuration failed: invalid database operation."));
-                    } 
+                    }
                 }
                 else _notifier.Add(NotifyType.Error, T("A profile with this name already exists."));
             }
