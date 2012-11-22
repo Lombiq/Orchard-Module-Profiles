@@ -70,7 +70,7 @@
     <Content Include="Module.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\Index.cshtml" />
+    <Content Include="Views\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Orchard\Orchard.Framework.csproj">
