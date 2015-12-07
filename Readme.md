@@ -32,22 +32,22 @@ Using the admin interface, you can create different sets of features and corresp
 ## Available commands:
 
 - Listing available profiles:
-	- moduleprofiles list
-	- modprofs lst
+	- `moduleprofiles list`
+	- `modprofs lst`
 - Activating a profile:
-	- moduleprofiles activate <ProfileName\>
-	- modprofs act <ProfileName\>
+	- `moduleprofiles activate <ProfileName>`
+	- `modprofs act <ProfileName>`
 - Inverse-activating a profile:
-	- moduleprofiles inverse activate <ProfileName\>
-	- modprofs inv <ProfileName\>
+	- `moduleprofiles inverse activate <ProfileName>`
+	- `modprofs inv <ProfileName>`
 - Saving the current configuration:
-	- moduleprofiles save <ProfileName\>
-	- modprofs save <ProfileName\>
+	- `moduleprofiles save <ProfileName>`
+	- `modprofs save <ProfileName>`
 - Deleting a profile:
-	- moduleprofiles delete <ProfileName\>
-	- modprofs del <ProfileName\>
+	- `moduleprofiles delete <ProfileName>`
+	- `modprofs del <ProfileName>`
 
-### See the [Version history](Docs/VersionHistory.md)
+**See the [Version history](Docs/VersionHistory.md).**
 
 
 The module's source is available in two public source repositories, automatically mirrored in both directions with [Git-hg Mirror](https://githgmirror.com):
