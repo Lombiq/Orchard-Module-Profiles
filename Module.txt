@@ -3,7 +3,7 @@ AntiForgery: enabled
 Author: The Orchard Hungary Team
 Website: https://github.com/Lombiq/Orchard-Module-Profiles
 Version: 1.1.5
-OrchardVersion: 1.9.2
+OrchardVersion: 1.9.3
 Description: A module that extends the module switching functionality using profiles.
 Features:
     OrchardHUN.ModuleProfiles:
