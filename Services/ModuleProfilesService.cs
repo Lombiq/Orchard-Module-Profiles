@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Orchard.Environment.Features;
 using OrchardHUN.ModuleProfiles.ViewModels;
-using JetBrains.Annotations;
 
 namespace OrchardHUN.ModuleProfiles.Services
 {
-    [UsedImplicitly]
     public class ModuleProfilesService : IModuleProfilesService
     {
         private readonly IFeatureManager _featureManager;
