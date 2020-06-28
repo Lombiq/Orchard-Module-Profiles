@@ -1,8 +1,8 @@
-# Orchard Module Profiles Readme
+# Orchard Module Profiles
 
 
 
-## Project Description
+## About
 
 An Orchard module for creating module profiles for different environments (eg. development, release).
 Using the admin interface, you can create different sets of features and corresponding states (enabled/disabled) and activate (and inverse-activate) them in the admin interface and the command line tool.
@@ -50,12 +50,9 @@ Using the admin interface, you can create different sets of features and corresp
 **See the [Version history](Docs/VersionHistory.md).**
 
 
-The module's source is available in two public source repositories, automatically mirrored in both directions with [Git-hg Mirror](https://githgmirror.com):
 
-- [https://bitbucket.org/Lombiq/orchard-module-profiles](https://bitbucket.org/Lombiq/orchard-module-profiles) (Mercurial repository)
-- [https://github.com/Lombiq/Orchard-Module-Profiles](https://github.com/Lombiq/Orchard-Module-Profiles) (Git repository)
+## Contributing and support
 
-Bug reports, feature requests and comments are warmly welcome, **please do so via GitHub**.
-Feel free to send pull requests too, no matter which source repository you choose for this purpose.
+Bug reports, feature requests, comments, questions, code contributions, and love letters are warmly welcome, please do so via GitHub issues and pull requests. Please adhere to our [open-source guidelines](https://lombiq.com/open-source-guidelines) while doing so.
 
-This project is developed by [Lombiq Technologies Ltd](http://lombiq.com/). Commercial-grade support is available through Lombiq.
+This project is developed by [Lombiq Technologies](https://lombiq.com/). Commercial-grade support is available through Lombiq.
