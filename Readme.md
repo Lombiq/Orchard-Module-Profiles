@@ -10,8 +10,8 @@ Using the admin interface, you can create different sets of features and corresp
 
 ## Read a full description about this module in our blogs:
 
-- magyarul: [Új modul a galériában: OrchardHUN.ModuleProfiles](http://orchardproject.hu/blog/uj-modul-a-galeriaban-orchardhun.moduleprofiles)
-- in English: [Introducing OrchardHUN.ModuleProfiles](http://english.orchardproject.hu/blog/introducing-orchardhun.moduleprofiles)
+- magyarul: [Új modul a galériában: OrchardHUN.ModuleProfiles](http://orchardproject.hu/blog/uj-modul-a-galeriaban-orchardhun-moduleprofiles)
+- in English: [Introducing OrchardHUN.ModuleProfiles](http://english.orchardproject.hu/blog/introducing-orchardhun-moduleprofiles)
 
 
 ## This module is available in the Orchard Gallery:
